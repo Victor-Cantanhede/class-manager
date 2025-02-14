@@ -1,0 +1,49 @@
+.defaultBtn {
+    padding: 5px;
+
+    position: relative;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    border-radius: 3px;
+    opacity: 0.9;
+    transition: 0.3s;
+}
+
+.BtnTitle {
+    padding: 2px 5px 2px 5px;
+
+    position: absolute;
+
+    font-size: 0.9em;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0.700);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.350);
+
+    animation: BtnTitleIn 0.1s linear forwards
+}
+
+@keyframes BtnTitleIn {
+    0% {top: 0; opacity: 0}
+    100% {top: -25px; opacity: 1}
+}
+
+.defaultBtn span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.defaultBtn p {
+    color: white;
+}
+
+.defaultBtn:hover {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.350);
+    opacity: 1;
+    transition: 0.3s;
+}

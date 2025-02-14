@@ -1,0 +1,105 @@
+.loginBody {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 450px;
+    grid-template-rows: auto;
+}
+
+.loginBg {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #021156;
+}
+
+.loginBg h1 {
+    color: #f0f0f0;
+}
+
+.loginContainer {
+    padding: 10px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+
+    background-color: #F2F6F9;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.404);
+}
+
+.containerInputs {
+    padding: 40px 20px 40px 20px;
+    border: 1px solid rgb(199, 199, 199);
+    border-radius: 3px;
+
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.containerInputs h2 {
+    padding: 5px;
+
+    position: absolute;
+    top: -1.4rem;
+
+    color: #2e2e2e;
+    background-color: #F2F6F9;
+}
+
+.loginInputs {
+    width: 100%;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.loginInputs label {
+    height: 40px;
+    width: 100%;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.175);
+}
+
+.loginInputs label input {
+    height: 100%;
+    width: 100%;
+    padding-left: 2.2rem;
+    border-bottom: 2px solid transparent;
+    border-radius: 3px;
+}
+
+.loginInputs label input:focus {
+    border-bottom: 2px solid #3657F4;
+    transition: 0.2s;
+}
+
+.loginInputs label span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    left: 2rem;
+}
+
+.inputsLogin {
+    color: #2e2e2e;
+    font-size: 0.9em;
+}
