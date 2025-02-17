@@ -1,0 +1,39 @@
+.InputLabel {
+    height: 40px;
+    width: 100%;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    position: relative;
+
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.175);
+}
+
+.InputLabel input {
+    height: 100%;
+    width: 100%;
+    padding-left: 2.2rem;
+    border-bottom: 2px solid transparent;
+    border-radius: 3px;
+
+    font-size: 0.9em;
+    color: #2e2e2e;
+}
+
+.InputLabel input:focus {
+    border-bottom: 2px solid #3657F4;
+    transition: 0.2s;
+}
+
+.InputLabel span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    left: 0.7rem;
+}

@@ -99,6 +99,17 @@
     left: 2rem;
 }
 
+.loginInputs label aside {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    right: 2rem;
+
+    cursor: pointer;
+}
+
 .inputsLogin {
     color: #2e2e2e;
     font-size: 0.9em;

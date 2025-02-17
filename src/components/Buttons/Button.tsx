@@ -5,7 +5,7 @@ import { ClipLoader } from "react-spinners";
 import styles from "../styles/Button.module.css";
 
 
-// Interface para os props
+// Interface para as props
 interface ButtonProps {
     height?: string;
     width?: string;
