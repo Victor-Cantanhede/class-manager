@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ModalProvider } from "./context/ModalContext";
 import "./global/styles/globals.css";
 
 
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body>
-        {children}
+        <ModalProvider>
+          {children}
+        </ModalProvider>
       </body>
     </html>
   );

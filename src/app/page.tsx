@@ -1,11 +1,24 @@
 'use client';
 
+// Import contexto
+import { useModalContext } from "./context/ModalContext";
+
+// Import Funções
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { login } from "./services/login/authService";
+import { IUserRegistration, registration } from "./services/login/registerService";
+import windowRefresh from "./utils/functions/windowRefresh";
+import passwordRules from "./utils/functions/passwordRules";
+import formatInputName from "./utils/functions/formatInputName";
+import formatInputEmail from "./utils/functions/formatInputEmail";
+import formatInputTel from "./utils/functions/formatInputTel";
+import formatInputUserName from "./utils/functions/formatInputUserName";
 
+// Import utilitários
 import { FiUser, FiLock, FiLogIn, FiEdit, FiMail, FiPhone, FiUserPlus, FiXCircle, FiEyeOff, FiEye } from "react-icons/fi";
 import { SlActionRedo, SlActionUndo } from "react-icons/sl";
+import Modal02 from "@/components/Modal/Modal02";
 import Button from "@/components/Buttons/Button";
 
 import styles from "./global/styles/page.module.css";
@@ -13,6 +26,9 @@ import styles from "./global/styles/page.module.css";
 
 // Página de login
 export default function LoginPage() {
+
+  // Contexto para renderização de modal
+  const {openModal, closeModal} = useModalContext();
 
   // Rota
   const router = useRouter();
@@ -26,6 +42,9 @@ export default function LoginPage() {
   // Estados para armazenar valor dos inputs de login
   const [inputUser, setInputUser] = useState('');
   const [inputPassword, setInputPassword] = useState('');
+
+  // Estado de usuário e senha válido/inválido
+  const [userValid, setUserValid] = useState(true);
 
   // Estados para armazerar valor dos inputs de cadastro de usuário
   const [inputName, setInputName] = useState('');
@@ -41,8 +60,18 @@ export default function LoginPage() {
   const [showPassoword, setShowPassword] = useState(false);
   const [passwordType, setPasswordType] = useState('password');
 
+  // Estado para mostrar regras de cadastramento de senha
+  const [passwordAlert, setPasswordAlert] = useState(['']);
+
   // Estado de animação loadingButton
   const [loadingBtnLogin, setLoadingBtnLogin] = useState(false);
+  const [loadingBtnRegister, setLoadingBtnRegister] = useState(false);
+
+  // Estado para habilitar botão próximo passo
+  const [nextStepBtn, setNextStepBtn] = useState(false);
+
+  // Estado para habilitar botão finalizar cadastro
+  const [registerBtn, setRegisterBtn] = useState(false);
 
 
   // Função para habilitar visualização de senhas
@@ -71,10 +100,26 @@ export default function LoginPage() {
   }
 
 
+  // Função para habilitar os campos de cadastro (userName & password)
+  function nextStep(): void {
+    if (!inputName || !inputEmail || !inputTel) {
+      console.warn('Preencha todos os campos de cadastro!');
+      return;
+    }
+
+    setRegisterForm(() => ({
+      personalData: false, credentials: true
+    }));
+  }
+
+
   // Função para verificar login
   async function handleLogin(event: React.FormEvent): Promise<void> {
+
     event.preventDefault();
-    setLoadingBtnLogin(true);
+
+    setLoadingBtnLogin(true); // Animação loading
+    setUserValid(true);
 
     // Enviando credenciais do usuário para o backend (simulação)
     try {
@@ -82,12 +127,48 @@ export default function LoginPage() {
       // Faz a requisição ao backend
       const userData = await login(inputUser, inputPassword);
   
-      alert('Usuário validado!');      
+      console.log('Usuário validado!');
       router.push('/pages/home'); // Redireciona ao Home
   
     } catch (error: any) {
-      alert(error.message);
+      setUserValid(false);
+      console.warn('Dados de usuário inválidos ou inexistentes!');
+      console.warn(error.message);
       setLoadingBtnLogin(false);
+    }
+  }
+
+
+  // Função para enviar cadastro de usuário ao servidor backend
+  async function handleRegister(event: React.FormEvent): Promise<void> {
+    event.preventDefault();
+    setLoadingBtnRegister(true); // Animação loading
+
+    // Enviando dados do usuário para o backend
+    try {
+      const formData: IUserRegistration = {
+        name: inputName,
+        email: inputEmail,
+        tel: parseInt(inputTel),
+        userName: inputUserName,
+        password: inputNewPassword
+      };
+
+      const userRegisterData = await registration(formData);
+
+      // Renderizando modal de sucesso
+      openModal(
+        <Modal02
+          type="confirm"
+          title="Cadastro de usuário"
+          message="Seu usuário foi cadastrado com sucesso!"
+          confirmAction={windowRefresh}
+        />
+      );
+      
+    } catch (error: any) {
+      alert(error.message);
+      setLoadingBtnRegister(false);
     }
   }
 
@@ -99,6 +180,76 @@ export default function LoginPage() {
     }
     return;
   }, [registerForm]);
+
+
+  // UseEffect para formatar input name
+  useEffect(() => {
+    if (!inputName) {return}
+
+    setInputName(formatInputName(inputName));
+
+  }, [inputName]);
+
+
+  // UseEffect para formatar input email
+  useEffect(() => {
+    if (!inputEmail) {return}
+
+    setInputEmail(formatInputEmail(inputEmail));
+
+  }, [inputEmail]);
+
+
+  // UseEffect para formatar input telefone
+  useEffect(() => {
+    if (!inputTel) {return}
+
+    setInputTel(formatInputTel(inputTel));
+
+  }, [inputTel]);
+
+
+  // UseEffect para habilitar botão próximo passo
+  useEffect(() => {
+    if (!inputName || !inputEmail || !inputTel) {
+      return setNextStepBtn(false);
+    }
+
+    setNextStepBtn(true);
+
+  }, [inputName, inputEmail, inputTel]);
+
+
+  // UseEffect para habilitar botão finalizar cadastro
+  useEffect(() => {
+    if (!inputUserName || !inputNewPassword || !inputConfirmPassword) {
+      return setRegisterBtn(false);
+    }
+
+    if (inputNewPassword !== inputConfirmPassword) {
+      return setRegisterBtn(false);
+    }
+
+    setRegisterBtn(true);
+
+  }, [inputUserName, inputNewPassword, inputConfirmPassword]);
+
+  // UseEffect para controlar quantidade de caracteres do userName (cadastro)
+  useEffect(() => {
+    if (!inputUserName) {return}
+
+    setInputUserName(formatInputUserName(inputUserName));
+
+  }, [inputUserName]);
+
+
+  // UseEffect para mostrar regras de criação de senha (cadastro)
+  useEffect(() => {
+    if (!inputNewPassword) {return}
+
+    setPasswordAlert(passwordRules(inputNewPassword));
+
+  }, [inputNewPassword]);
 
 
   // Retorno TSX
@@ -119,7 +270,7 @@ export default function LoginPage() {
             <>
               <h2>Login</h2>
               <p>Digite seu usuário e senha abaixo para continuar:<br />
-              O usuário e senha padrão é "<strong>Master</strong>".</p>
+              O usuário e senha padrão é "<strong>Master@123</strong>".</p>
 
               {/* Formulário de login */}
               <form
@@ -143,23 +294,29 @@ export default function LoginPage() {
                 </label>
 
                 {/* Senha */}
-                <label htmlFor="iPassword">
-                  <span><FiLock color="#2e2e2e" /></span>
-                  <input
-                    className={styles.inputsLogin}
-                    type={passwordType}
-                    id="iPassword"
-                    placeholder="Senha"
-                    value={inputPassword}
-                    onChange={(e) => setInputPassword(e.target.value)}
-                  />
-                  <aside onClick={hidePassword}>
-                    {
-                      (!showPassoword && <FiEyeOff color="#2e2e2e" />) ||
-                      (showPassoword && <FiEye color="#2e2e2e" />)
-                    }
-                  </aside>
-                </label>
+                <div>
+                  <label htmlFor="iPassword">
+                    <span><FiLock color="#2e2e2e" /></span>
+                    <input
+                      className={styles.inputsLogin}
+                      type={passwordType}
+                      id="iPassword"
+                      placeholder="Senha"
+                      value={inputPassword}
+                      onChange={(e) => setInputPassword(e.target.value)}
+                    />
+                    <aside onClick={hidePassword}>
+                      {
+                        (!showPassoword && <FiEyeOff color="#2e2e2e" />) ||
+                        (showPassoword && <FiEye color="#2e2e2e" />)
+                      }
+                    </aside>
+                  </label>
+
+                  {!userValid &&
+                    <span className={styles.alert}>Dados de usuário inválidos ou inexistentes!</span>
+                  }
+                </div>
 
                 {/* Btn acessar */}
                 <Button
@@ -172,19 +329,23 @@ export default function LoginPage() {
                   onClick={() => null}
                 />
               </form>
+              
+              {!loadingBtnLogin &&
+                <>
+                  <p>Não tem uma conta?</p>
 
-              <p>Não tem uma conta?</p>
-
-              {/* Btn cadastre-se */}
-              <Button
-                height= '40px'
-                value= 'Cadastre-se'
-                icon= {<FiEdit size={'1.3em'} />}
-                type= 'button'
-                onClick={() => setRegisterForm((prev) => ({
-                  ...prev, personalData: true
-                }))}
-              />
+                  {/* Btn cadastre-se */}
+                  <Button
+                    height= '40px'
+                    value= 'Cadastre-se'
+                    icon= {<FiEdit size={'1.3em'} />}
+                    type= 'button'
+                    onClick={() => setRegisterForm((prev) => ({
+                      ...prev, personalData: true
+                    }))}
+                  />
+                </>
+              }
             </>
           }
 
@@ -260,9 +421,8 @@ export default function LoginPage() {
                       value= 'Avançar'
                       icon= {<SlActionRedo size={'1.3em'} />}
                       type='button'
-                      onClick={() => setRegisterForm(() => ({
-                        personalData: false, credentials: true
-                      }))}
+                      enabled={nextStepBtn}
+                      onClick={nextStep}
                     />
 
                     {/* Btn cancelar cadastro */}
@@ -282,49 +442,73 @@ export default function LoginPage() {
                 {registerForm.credentials &&
                   <>
                     {/* Nome de usuário */}
-                    <label htmlFor="iUser">
-                      <span><FiUserPlus color="#2e2e2e" /></span>
-                      <input
-                        className={styles.inputsLogin}
-                        type="text"
-                        id="iUser"
-                        placeholder="Nome de usuário"
-                        value={inputUserName}
-                        onChange={(e) => setInputUserName(e.target.value)}
-                      />
-                    </label>
+                    <div>
+                      <label htmlFor="iUser">
+                        <span><FiUserPlus color="#2e2e2e" /></span>
+                        <input
+                          className={styles.inputsLogin}
+                          type="text"
+                          id="iUser"
+                          placeholder="Nome de usuário"
+                          value={inputUserName}
+                          onChange={(e) => setInputUserName(e.target.value)}
+                        />
+                      </label>
+                      
+                      {inputUserName && inputUserName.length < 10 &&
+                        <span className={styles.alert}>Mínimo 10 caracteres!</span>
+                      }
+                    </div>
 
                     {/* Senha */}
-                    <label htmlFor="iNewPassword">
-                      <span><FiLock color="#2e2e2e" /></span>
-                      <input
-                        className={styles.inputsLogin}
-                        type={passwordType}
-                        id="iNewPassword"
-                        placeholder="Senha"
-                        value={inputNewPassword}
-                        onChange={(e) => setInputNewPassword(e.target.value)}
-                      />
-                      <aside onClick={hidePassword}>
-                        {
-                          (!showPassoword && <FiEyeOff color="#2e2e2e" />) ||
-                          (showPassoword && <FiEye color="#2e2e2e" />)
-                        }
-                      </aside>
-                    </label>
+                    <div>
+                      <label htmlFor="iNewPassword">
+                        <span><FiLock color="#2e2e2e" /></span>
+                        <input
+                          className={styles.inputsLogin}
+                          type={passwordType}
+                          id="iNewPassword"
+                          placeholder="Senha"
+                          value={inputNewPassword}
+                          onChange={(e) => setInputNewPassword(e.target.value)}
+                        />
+                        <aside onClick={hidePassword}>
+                          {
+                            (!showPassoword && <FiEyeOff color="#2e2e2e" />) ||
+                            (showPassoword && <FiEye color="#2e2e2e" />)
+                          }
+                        </aside>
+                      </label>
+                      
+                      {inputNewPassword && passwordAlert.map((rule) => {
+                        if (rule === '') {return}
+
+                        return (
+                          <span key={Math.random()} className={styles.alert}>{rule}</span>
+                        );
+                      })}
+                    </div>
 
                     {/* Confirmação de senha */}
-                    <label htmlFor="iConfirmPassword">
-                      <span><FiLock color="#2e2e2e" /></span>
-                      <input
-                        className={styles.inputsLogin}
-                        type="password"
-                        id="iConfirmPassword"
-                        placeholder="Confirme sua senha"
-                        value={inputConfirmPassword}
-                        onChange={(e) => setInputConfirmPassword(e.target.value)}
-                      />
-                    </label>
+                    <div>
+                      <label htmlFor="iConfirmPassword">
+                        <span><FiLock color="#2e2e2e" /></span>
+                        <input
+                          className={styles.inputsLogin}
+                          type="password"
+                          id="iConfirmPassword"
+                          placeholder="Confirme sua senha"
+                          value={inputConfirmPassword}
+                          onChange={(e) => setInputConfirmPassword(e.target.value)}
+                        />
+                      </label>
+
+                      {
+                        (inputNewPassword && inputConfirmPassword) &&
+                        (inputNewPassword !== inputConfirmPassword) &&
+                        <span className={styles.alert}>Confirmação de senha inválida!</span>
+                      }
+                    </div>
 
                     {/* Btn finalizar cadastro */}
                     <Button
@@ -333,7 +517,9 @@ export default function LoginPage() {
                       value= 'Finalizar cadastro'
                       icon= {<SlActionRedo size={'1.3em'} />}
                       type='submit'
-                      onClick={() => {}}
+                      loading={loadingBtnRegister}
+                      enabled={registerBtn}
+                      onClick={handleRegister}
                     />
 
                     {/* Btn voltar */}

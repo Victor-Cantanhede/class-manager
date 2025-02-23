@@ -1,0 +1,52 @@
+.bgModal {
+    height: 100dvh;
+    max-height: 100dvh;
+    width: 100vw;
+    max-width: 100%;
+    
+    position: fixed;
+    z-index: 99999;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: rgba(0, 0, 0, 0.400);
+    backdrop-filter: blur(2px);
+
+    animation: bgModalIn 0.4s forwards;
+}
+
+@keyframes bgModalIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+.modalContainer {
+    height: 200px;
+    min-height: max-content;
+    width: 400px;
+    max-width: 95%;
+    padding: 10px;
+    border-radius: 3px;
+
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.420);
+
+    animation: modalContainerIn 0.8s forwards;
+}
+
+@keyframes modalContainerIn {
+    0% {
+        scale: 0.5;
+        opacity: 0;
+    }
+    50% {
+        scale: 0.5;
+        opacity: 0;
+    }
+    100% {
+        scale: 1;
+        opacity: 1;
+    }
+}

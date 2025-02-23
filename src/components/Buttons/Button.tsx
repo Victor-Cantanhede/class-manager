@@ -17,6 +17,7 @@ interface ButtonProps {
     icon?: React.ReactNode;
     type?: 'button' | 'submit' | 'reset';
     loading?: boolean;
+    enabled?: boolean;
     onClick?: (event: React.MouseEvent) => void;
 }
 
@@ -32,6 +33,7 @@ export default function Button({
         icon = null,
         type = "button",
         loading = false,
+        enabled = true,
         onClick = () => alert('Este botão não está executando uma função!'),
     }: ButtonProps) {
 
@@ -41,23 +43,30 @@ export default function Button({
         width,
         margin,
         color,
-        background: loading? '#C7CBCD' : background,
-        cursor: loading? 'not-allowed' : 'pointer',
+        background: loading || !enabled ? '#C7CBCD' : background,
+        cursor: loading || !enabled ? 'not-allowed' : 'pointer',
     };
 
     // State para mostrar title do botão
-    const [titleOn, setTitleOn] = useState(false);
+    const [titleOn, setTitleOn] = useState<Boolean>(false);
+
+    // State para indicar que o botão foi clicado
+    const [clicked, setClicked] = useState<Boolean>(false);
+
 
     // Função para mostrar title do botão
     function showTitle() {
         setTitleOn(!titleOn);
     }
 
-    // Função para impedir execução da ação caso o loading for true
-    function bloqAction(): void {
+    // Função para impedir ação caso o loading ou isEnabled for true
+    function bloqAction(event: React.FormEvent): void {
+        event.preventDefault();// Caso o button esteja em um formulário
+
         if (loading) {
-            console.warn('Não é possível executar esta ação, aguarde o carregamento!');
+            return console.warn('Não é possível executar esta ação, aguarde o carregamento!');
         }
+        return console.warn('Não é possível executar esta ação no momento!');
     }
 
 
@@ -69,7 +78,7 @@ export default function Button({
             type={type}
             onMouseEnter={showTitle}
             onMouseLeave={showTitle}
-            onClick={loading? bloqAction : onClick}
+            onClick={loading || !enabled ? bloqAction : onClick}
         >
             {titleOn && title !== null &&
                 <span className={styles.BtnTitle}>{title}</span>
