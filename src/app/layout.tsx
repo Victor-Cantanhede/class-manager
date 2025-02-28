@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthProvider } from "./context/AuthContext";
 import { ModalProvider } from "./context/ModalContext";
 import "./global/styles/globals.css";
 
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body>
-        <ModalProvider>
-          {children}
-        </ModalProvider>
+        <AuthProvider>
+          <ModalProvider>
+            {children}
+          </ModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,11 +2,10 @@
 
 // Import contexto
 import { useModalContext } from "./context/ModalContext";
+import { useAuthContext } from "./context/AuthContext";
 
 // Import Funções
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { login } from "./services/login/authService";
 import { IUserRegistration, registration } from "./services/login/registerService";
 import windowRefresh from "./utils/functions/windowRefresh";
 import passwordRules from "./utils/functions/passwordRules";
@@ -27,11 +26,11 @@ import styles from "./global/styles/page.module.css";
 // Página de login
 export default function LoginPage() {
 
-  // Contexto para renderização de modal
-  const {openModal, closeModal} = useModalContext();
+  // Contexto para autenticação de login
+  const {login} = useAuthContext();
 
-  // Rota
-  const router = useRouter();
+  // Contexto para renderização de modal
+  const {openModal} = useModalContext();
 
   // Estado para renderizar o form de cadastro de usuário
   const [registerForm, setRegisterForm] = useState({
@@ -121,19 +120,44 @@ export default function LoginPage() {
     setLoadingBtnLogin(true); // Animação loading
     setUserValid(true);
 
-    // Enviando credenciais do usuário para o backend (simulação)
+    // Enviando credenciais do usuário para o backend
     try {
-
+      
       // Faz a requisição ao backend
-      const userData = await login(inputUser, inputPassword);
-  
+      await login(inputUser, inputPassword);
       console.log('Usuário validado!');
-      router.push('/pages/home'); // Redireciona ao Home
-  
+
+      // A função login fica responsável por redirecionar para a página home
+      
     } catch (error: any) {
-      setUserValid(false);
-      console.warn('Dados de usuário inválidos ou inexistentes!');
-      console.warn(error.message);
+
+      if (!error.response) {
+        // Se error.response for undefined, é um erro de conexão (servidor fora do ar)
+        console.error("Erro de conexão com o servidor:", error.message);
+        openModal(
+            <Modal02
+                type="error"
+                title="Servidor Indisponível"
+                message="Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente mais tarde."
+            />
+        );
+      } else if (error.response.status >= 500) {
+          // Erros 500+ (problemas no servidor)
+          console.error(`Erro no servidor (${error.response.status}):`, error.message);
+          openModal(
+              <Modal02
+                  type="error"
+                  title="Servidor Indisponível"
+                  message="Ops! Nosso servidor está passando por instabilidades. Tente novamente mais tarde."
+              />
+          );
+      } else {
+          // Erros de autenticação ou outras respostas HTTP (ex: 400, 401, 403, 404)
+          console.warn("Credenciais inválidas. Verifique seu usuário e senha.");
+          console.warn(error.message);
+          setUserValid(false);
+      }
+
       setLoadingBtnLogin(false);
     }
   }
@@ -154,7 +178,7 @@ export default function LoginPage() {
         password: inputNewPassword
       };
 
-      const userRegisterData = await registration(formData);
+      await registration(formData);
 
       // Renderizando modal de sucesso
       openModal(
@@ -167,7 +191,24 @@ export default function LoginPage() {
       );
       
     } catch (error: any) {
-      alert(error.message);
+
+      // Se o erro possui uma resposta do backend
+      const errorMessage =
+        error.response?.data?.message || // Se o backend enviar um campo "message"
+        error.response?.data || // Se a resposta for um texto direto
+        "Ops! Erro inesperado, tente novamente mais tarde!";
+
+      console.error(error, errorMessage);
+      
+      // Renderizando modal de erro com a mensagem do backend
+      openModal(
+        <Modal02
+          type="error"
+          title="Cadastro de usuário"
+          message={errorMessage}
+        />
+      );
+
       setLoadingBtnRegister(false);
     }
   }

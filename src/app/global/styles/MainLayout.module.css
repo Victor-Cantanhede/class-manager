@@ -1,5 +1,6 @@
 .main {
     height: 100%;
+    max-height: 100dvh;
     width: 100%;
     max-width: 100%;
 
@@ -8,12 +9,17 @@
 }
 
 .sideContainer {
+    max-height: 100%;
+
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
     gap: 30px;
 
     background-color: var(--blueColor01);
+    box-shadow: var(--boxShadow01);
+    z-index: 9999;
+    overflow-y: auto;
 }
 
 .logo {
@@ -30,6 +36,94 @@
     color: var(--fontWhite01);
 }
 
+.menuContainer {
+    flex-grow: 1;
+    width: 100%;
+
+    overflow-y: auto;
+}
+
+.menuContainer ul li {
+    height: 45px;
+    padding: 10px;
+    padding-left: 20px;
+    border-left: 3px solid transparent;
+    border-radius: 3px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--fontWhite01);
+    font-size: 1em;
+    opacity: 0.8;
+
+    transition: 0.2s;
+}
+
+.menuContainer ul li:hover {
+    padding-left: 30px;
+    border-left: 3px solid var(--fontWhite01);
+    
+    background-color: var(--blueColor02);
+    box-shadow: var(--boxShadow01);
+
+    cursor: pointer;
+    opacity: 1;
+
+    transition: 0.2s;
+}
+
 .bodyContainer {
     background-color: var(--bgWhiteColor01);
+    overflow-y: auto;
+}
+
+.bodyContainer header {
+    height: 60px;
+    padding: 20px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: var(--whiteColor01);
+    box-shadow: var(--boxShadow01);
+}
+
+.bodyContainer header span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.5em;
+    color: var(--blueColor01);
+}
+
+.myAccountContainer {
+    padding-left: 10px;
+    border: 1px solid var(--lineColor01);
+    border-radius: 20px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    cursor: pointer;
+}
+
+.myAccount {
+    padding: 5px;
+    border: 1px solid var(--blueColor02);
+    border-radius: 50px;
+    background-color: var(--blueColor02);
+    box-shadow: var(--boxShadow01);
+}
+
+.contentsContainer {
+    padding: 20px;
 }

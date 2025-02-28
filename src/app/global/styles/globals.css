@@ -14,6 +14,8 @@
 
     --lineColor01: rgb(199, 199, 199);
     --lineColor02: rgba(199, 199, 199, 0.219);
+
+    --boxShadow01: 0 0 5px rgba(0, 0, 0, 0.404);
 }
 
 * {
@@ -36,4 +38,8 @@ body {
 
 h1, h2, h3, h4, p {
     color: #2e2e2e;
+}
+
+li {
+    list-style: none;
 }
