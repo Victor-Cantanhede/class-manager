@@ -87,7 +87,7 @@ export default function Button({
             {!loading &&
                 <>
                     <span>{icon}</span>
-                    <p>{value}</p>                
+                    {value && <p>{value}</p>}                
                 </>
             }
 

@@ -7,6 +7,7 @@ import { useAuthContext } from "./context/AuthContext";
 // Import Funções
 import { useEffect, useState } from "react";
 import { IUserRegistration, registration } from "./services/login/registerService";
+import { useAuthEmail } from "@/hooks/useAuthEmail";
 import windowRefresh from "./utils/functions/windowRefresh";
 import passwordRules from "./utils/functions/passwordRules";
 import formatInputName from "./utils/functions/formatInputName";
@@ -27,10 +28,13 @@ import styles from "./global/styles/page.module.css";
 export default function LoginPage() {
 
   // Contexto para autenticação de login
-  const {login} = useAuthContext();
+  const { login, emailValidated } = useAuthContext();
 
   // Contexto para renderização de modal
   const {openModal} = useModalContext();
+
+  // Hook para envio de token via e-mail
+  const { sendTokenToEmail, loadingTokenEmail } = useAuthEmail();
 
   // Estado para renderizar o form de cadastro de usuário
   const [registerForm, setRegisterForm] = useState({
@@ -252,13 +256,13 @@ export default function LoginPage() {
 
   // UseEffect para habilitar botão próximo passo
   useEffect(() => {
-    if (!inputName || !inputEmail || !inputTel) {
+    if (!inputName || !inputEmail || !inputTel || inputTel.length < 10 || !emailValidated) {
       return setNextStepBtn(false);
     }
 
     setNextStepBtn(true);
 
-  }, [inputName, inputEmail, inputTel]);
+  }, [inputName, inputEmail, inputTel, emailValidated]);
 
 
   // UseEffect para habilitar botão finalizar cadastro
@@ -430,17 +434,27 @@ export default function LoginPage() {
                     </label>
 
                     {/* E-mail */}
-                    <label htmlFor="iEmail">
-                      <span><FiMail color="#2e2e2e" /></span>
-                      <input
-                        className={styles.inputsLogin}
-                        type="email"
-                        id="iEmail"
-                        placeholder="E-mail"
-                        value={inputEmail}
-                        onChange={(e) => setInputEmail(e.target.value)}
-                      />
-                    </label>
+                    <div>
+                      <label htmlFor="iEmail">
+                        <span><FiMail color="#2e2e2e" /></span>
+                        <input
+                          className={styles.inputsLogin}
+                          type="email"
+                          id="iEmail"
+                          placeholder="E-mail"
+                          value={inputEmail}
+                          onChange={(e) => setInputEmail(e.target.value)}
+                        />
+                      </label>
+
+                      {inputEmail && !emailValidated &&
+                        <span className={styles.alert}>Validação de e-mail obrigatória!</span>
+                      }
+
+                      {inputEmail && emailValidated &&
+                        <span className={styles.positiveAlert}>E-mail validado com sucesso!</span>
+                      }
+                    </div>
 
                     {/* Telefone */}
                     <label htmlFor="iTel">
@@ -455,10 +469,21 @@ export default function LoginPage() {
                       />
                     </label>
 
+                    {/* Btn validar e-mail */}
+                    {inputEmail && !emailValidated &&
+                      <Button
+                        height='40px'
+                        value='Validar e-mail'
+                        icon= {<FiMail size={'1.3em'} />}
+                        type='button'
+                        loading={loadingTokenEmail}
+                        onClick={() => sendTokenToEmail(inputEmail)}
+                      />
+                    }
+
                     {/* Btn próximo passo */}
                     <Button
                       height= '40px'
-                      margin= '10px 0 0 0'
                       value= 'Avançar'
                       icon= {<SlActionRedo size={'1.3em'} />}
                       type='button'

@@ -9,6 +9,7 @@
     --whiteColor01: white;
 
     --fontWhite01: #f0f0f0;
+    --fontBlack01: #2e2e2e;
     
     --bgWhiteColor01: #F2F6F9;
 
@@ -16,6 +17,7 @@
     --lineColor02: rgba(199, 199, 199, 0.219);
 
     --boxShadow01: 0 0 5px rgba(0, 0, 0, 0.404);
+    --inputShadow01: 0 0 5px rgba(0, 0, 0, 0.175);
 }
 
 * {
@@ -37,7 +39,7 @@ body {
 }
 
 h1, h2, h3, h4, p {
-    color: #2e2e2e;
+    color: var(--fontBlack01);
 }
 
 li {

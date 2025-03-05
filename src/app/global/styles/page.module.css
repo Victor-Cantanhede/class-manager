@@ -127,7 +127,7 @@
     transition: 0.3s;
 }
 
-.loginInputs div .alert{
+.loginInputs div .alert {
     padding: 2px;
     border-left: 2px solid #ff3434;
     border-radius: 3px;
@@ -136,7 +136,16 @@
     font-size: 0.8em;
 }
 
+.loginInputs div .positiveAlert {
+    padding: 2px;
+    border-left: 2px solid #3bff34;
+    border-radius: 3px;
+    background-color: #d5ffd8;
+    color: #49df2b;
+    font-size: 0.8em;
+}
+
 .inputsLogin {
-    color: #2e2e2e;
+    color: var(--fontBlack01);
     font-size: 0.9em;
 }

@@ -14,6 +14,8 @@ interface IUser {
 // Interface IAuthContext
 interface IAuthContext {
     user: IUser | null;
+    emailValidated: boolean;
+    setEmailValidated: (value: boolean) => void;
     login: (userName: string, password: string) => Promise<void>;
     logout: () => void;
 }
@@ -26,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Estado para armazenar dados do usuário
     const [user, setUser] = useState<IUser | null>(null);
+    const [emailValidated, setEmailValidated] = useState<boolean>(false);
 
     // Estado para definir carregamento do localStorage
     const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Buscando usuário no localStorage
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
+        const storedEmailValidated = localStorage.getItem('emailValidated');
 
         // Caso usuário exista no localStorage, automaticamente o user recebe o usuário existente
         if (storedUser) {
@@ -47,6 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 console.error("Erro ao analisar usuário do localStorage:", error);
                 setUser(null);
             }
+        }
+
+        // Restaurar estado do emailValidated
+        if (storedEmailValidated !== null) {
+            setEmailValidated(storedEmailValidated === "true");
         }
 
         setLoading(false); // Parando "carregamento"            
@@ -92,7 +101,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Função de logout
     function logout() {
         setUser(null);
+        setEmailValidated(false);
         localStorage.removeItem('user');
+        localStorage.removeItem('emailValidated');
 
         router.push('/');
     }
@@ -104,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, emailValidated, setEmailValidated, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

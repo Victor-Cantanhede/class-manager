@@ -15,6 +15,7 @@
 }
 
 .BtnTitle {
+    width: max-content;
     padding: 2px 5px 2px 5px;
 
     position: absolute;
