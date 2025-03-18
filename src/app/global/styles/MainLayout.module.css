@@ -43,7 +43,7 @@
     overflow-y: auto;
 }
 
-.menuContainer ul li {
+.menuContainer ul li a {
     height: 45px;
     padding: 10px;
     padding-left: 20px;
@@ -57,12 +57,13 @@
 
     color: var(--fontWhite01);
     font-size: 1em;
+    text-decoration: none;
     opacity: 0.8;
 
     transition: 0.2s;
 }
 
-.menuContainer ul li:hover {
+.menuContainer ul li a:hover {
     padding-left: 30px;
     border-left: 3px solid var(--fontWhite01);
     

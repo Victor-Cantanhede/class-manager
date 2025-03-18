@@ -1,0 +1,49 @@
+.selectContainer {
+    position: relative;
+}
+
+.selectContainer * {
+    cursor: pointer;
+}
+
+.selectContainer input {
+    cursor: text;
+}
+
+.iconClick {
+    height: 20px;
+    width: 1rem;
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+}
+
+.optionsContainer {
+    width: 100%;
+    margin-top: 3px;
+    padding: 3px;
+    border-radius: 3px;
+
+    position: absolute;
+    z-index: 9999;
+
+    background-color: var(--whiteColor01);
+    box-shadow: var(--boxShadow01);
+}
+
+.optionsContainer li {
+    padding: 5px;
+    border-bottom: 1px solid var(--selectOptionsColor01);
+    border-radius: 3px;
+
+    font-size: 0.9em;
+    color: var(--fontBlack01);
+
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.optionsContainer li:hover {
+    background-color: var(--selectOptionsColor01);
+}

@@ -1,5 +1,7 @@
+import { useAuthContext } from '@/app/context/AuthContext';
 import { ReactNode } from 'react';
 import { FiLayers, FiUsers, FiTool, FiHome, FiUser } from "react-icons/fi";
+import Link from 'next/link';
 
 import styles from '../styles/MainLayout.module.css';
 
@@ -8,17 +10,31 @@ import styles from '../styles/MainLayout.module.css';
 interface IMenuOpt {
     title: string;
     icon: ReactNode;
+    page: string;
 }
 
 // Componente MainLayout
 export default function MainLayout({ children }: { children: React.ReactNode }) {
 
+    // Contexto usuário
+    const { user } = useAuthContext();
+
+    // Primeiro nome do usuário
+    const name = (): string | undefined => {
+        const firstNameUser = user?.name.split(' ')[0].toLowerCase();
+        const formatedNameUser = firstNameUser
+            ? firstNameUser.charAt(0).toUpperCase() + firstNameUser.slice(1)
+            : undefined;
+
+        return formatedNameUser;
+    }
+
     // Opções do menu
     const menuOptions: IMenuOpt[] = [
-        {title: 'Home', icon: <FiHome />},
-        {title: 'Turmas', icon: <FiLayers />},
-        {title: 'Alunos', icon: <FiUsers />},
-        {title: 'Suporte', icon: <FiTool />}
+        {title: 'Home', icon: <FiHome />, page: '/pages/home'},
+        {title: 'Turmas', icon: <FiLayers />, page: '/pages/turmas'},
+        {title: 'Alunos', icon: <FiUsers />, page: '/pages/alunos'},
+        {title: 'Suporte', icon: <FiTool />, page: '/pages/suporte'}
     ]
 
     return (
@@ -33,7 +49,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <nav className={styles.menuContainer}>
                     <ul>
                         {menuOptions.map((option) =>
-                            <li key={Math.random()}>{option.icon} {option.title}</li>
+                            <li key={Math.random()}>
+                                <Link href={option.page}>
+                                    {option.icon} {option.title}
+                                </Link>
+                            </li>
                         )}
                     </ul>
                 </nav>
@@ -45,7 +65,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 {/* Header */}
                 <header>
                     <aside>
-                        <span>Olá, (Nome do usuário)!</span>
+                        <span>Olá, {name()}!</span>
                     </aside>
 
                     <div className={styles.myAccountContainer}>

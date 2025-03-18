@@ -1,0 +1,12 @@
+.cardContainer {
+    max-width: max-content;
+    padding: 10px;
+    border-radius: 3px;
+
+    background-color: var(--whiteColor01);
+    box-shadow: var(--boxShadow01);
+}
+
+.qtde {
+    font-weight: bold;
+}
