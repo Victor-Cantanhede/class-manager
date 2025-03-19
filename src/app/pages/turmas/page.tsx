@@ -29,6 +29,24 @@ export default function TurmasPage() {
     // Estado do input de pesquisa rápida
     const [searchInput, setSearchInput] = useState('');
 
+    // Estado do input select curso
+    const [inputCourse, setInputCourse] = useState('');
+
+    // Estado do input select modalidade
+    const [inputModality, setInputModality] = useState('');
+
+    // Estado do input select responsável
+    const [inputResponsible, setInputResponsible] = useState('');
+
+    // Estado do input select situação
+    const [inputStatus, setInputStatus] = useState('');
+
+    // Estado do input data inicial
+    const [inputStartDate, setInputStartDate] = useState('');
+
+    // Estado do input data final
+    const [inputEndDate, setInputEndDate] = useState('');
+
     // Estado para armazenar lista de cursos
     const [course, setCourse] = useState([
         {id: 1, name: 'Engenharia de Software'},
@@ -67,7 +85,7 @@ export default function TurmasPage() {
             modality: 'EAD',
             amount: 23,
             startDate: '11/03/2025',
-            endDate: '26/11/2025',
+            endDate: '26/04/2025',
             responsible: 'Victor Mateus Mesquita Cantanhede',
             status: 'Em andamento'
         },
@@ -77,8 +95,8 @@ export default function TurmasPage() {
             course: 'Design Gráfico',
             modality: 'Presencial',
             amount: 28,
-            startDate: '11/03/2025',
-            endDate: '26/11/2025',
+            startDate: '15/03/2025',
+            endDate: '28/04/2025',
             responsible: 'Micaele Silva dos Santos',
             status: 'Em andamento'
         },
@@ -88,8 +106,8 @@ export default function TurmasPage() {
             course: 'Licenciatura em Química',
             modality: 'Semi-presencial',
             amount: 15,
-            startDate: '11/03/2025',
-            endDate: '26/11/2025',
+            startDate: '13/03/2025',
+            endDate: '30/04/2025',
             responsible: 'Edna Mesquita Brito',
             status: 'Em andamento'
         }
@@ -99,12 +117,64 @@ export default function TurmasPage() {
     const filteredClassesByCourse = classes.filter((turma) =>
         
         Object.values(turma).some((value) =>
-            String(value).toLowerCase().includes('engenharia')
+            String(value).toLowerCase().includes(inputCourse.toLowerCase())
         )
     );
 
+    // Filtrando turmas por modalidade
+    const filteredClassesByModality = filteredClassesByCourse.filter((turma) =>
+        
+        Object.values(turma).some((value) =>
+            String(value).toLowerCase().includes(inputModality.toLowerCase())
+        )
+    );
+
+    // Filtrando turmas por responsável
+    const filteredClassesByResponsible = filteredClassesByModality.filter((turma) =>
+        
+        Object.values(turma).some((value) =>
+            String(value).toLowerCase().includes(inputResponsible.toLowerCase())
+        )
+    );
+
+    // Filtrando turmas por situação
+    const filteredClassesByStatus = filteredClassesByResponsible.filter((turma) =>
+        
+        Object.values(turma).some((value) =>
+            String(value).toLowerCase().includes(inputStatus.toLowerCase())
+        )
+    );
+
+    /* Filtrando turmas por data inicial */
+
+    // Função para converter "DD/MM/YYYY" para objeto Date
+    const convertToDate = (dateString: string) => {
+        const [day, month, year] = dateString.split('/').map(Number);
+        return new Date(year, month - 1, day); // Mês começa do 0 (Janeiro = 0)
+    };
+
+    // Filtra as turmas que têm a data de início maior ou igual à informada
+    const filteredClassesByStartDate = filteredClassesByStatus.filter((turma) => {
+        if (!inputStartDate || !turma.startDate) return true; // Se não tiver data, exibe todas
+
+        const turmaDate = convertToDate(turma.startDate); // Converte data da API
+        const inputDate = new Date(inputStartDate); // Converte a data do input (YYYY-MM-DD)
+
+        return turmaDate >= inputDate;
+    });
+
+    // Filtra as turmas que têm a data final menor ou igual à informada
+    const filteredClassesByEndDate = filteredClassesByStartDate.filter((turma) => {
+        if (!inputEndDate || !turma.endDate) return true; // Se não tiver data, exibe todas
+
+        const turmaDate = convertToDate(turma.endDate); // Converte data da API
+        const inputDate = new Date(inputEndDate); // Converte a data do input (YYYY-MM-DD)
+
+        return turmaDate <= inputDate;
+    });
+
     // Tabela de turmas filtrada pelo input de pesquisa rápida
-    const filteredClasses = classes.filter((turma) =>
+    const filteredClasses = filteredClassesByEndDate.filter((turma) =>
 
         Object.values(turma).some((value) =>
             String(value).toLowerCase().includes(searchInput.toLowerCase())
@@ -152,6 +222,8 @@ export default function TurmasPage() {
                                 width='100%'
                                 placeholder='Selecione um curso'
                                 options={course}
+                                value={inputCourse}
+                                onChange={setInputCourse}
                             />
                         </div>
 
@@ -162,6 +234,8 @@ export default function TurmasPage() {
                                 width='100%'
                                 placeholder='Selecione uma modalidade'
                                 options={modality}
+                                value={inputModality}
+                                onChange={setInputModality}
                             />
                         </div>
 
@@ -172,6 +246,8 @@ export default function TurmasPage() {
                                 width='100%'
                                 placeholder='Selecione um responsável'
                                 options={responsible}
+                                value={inputResponsible}
+                                onChange={setInputResponsible}
                             />
                         </div>
                         
@@ -182,6 +258,8 @@ export default function TurmasPage() {
                                 width='100%'
                                 placeholder='Selecione uma situação'
                                 options={status}
+                                value={inputStatus}
+                                onChange={setInputStatus}
                             />
                         </div>
 
@@ -194,8 +272,8 @@ export default function TurmasPage() {
                                 <Input01
                                     width='max-content'
                                     type='date'
-                                    value={''}
-                                    onChange={(e) => e.target.value}
+                                    value={inputStartDate}
+                                    onChange={(e) => setInputStartDate(e.target.value)}
                                 />
                             </div>
 
@@ -205,8 +283,8 @@ export default function TurmasPage() {
                                 <Input01
                                     width='max-content'
                                     type='date'
-                                    value={''}
-                                    onChange={(e) => e.target.value}
+                                    value={inputEndDate}
+                                    onChange={(e) => setInputEndDate(e.target.value)}
                                 />
                             </div>
                         </div>

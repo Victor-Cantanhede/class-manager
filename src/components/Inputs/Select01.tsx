@@ -16,7 +16,8 @@ interface ISelectProps {
     width?: string;
     padding?: string;
     placeholder?: string;
-    value?: string;
+    value: string;
+    onChange?: (val: string) => void; // Recebe função setValue() do useState no elemento pai
     options: IOption[];
 }
 
@@ -26,6 +27,7 @@ export default function Select({
     padding = '0',
     placeholder = 'Selecione...',
     value = '',
+    onChange = () => {},
     options = [
         { id: 1, name: 'Opção 1' },
         { id: 2, name: 'Opção 2' },
@@ -41,6 +43,12 @@ export default function Select({
 
     // Pegando referência do elemento pai
     const selectContainerRef = useRef<HTMLDivElement>(null);
+
+    // UseEffect para monitorar alteração no inputValue
+    useEffect(() => {
+        onChange(inputValue);
+
+    }, [inputValue]);
 
     // Opções filtradas a partir do input01
     const filteredOptions = options.filter((opt: IOption) =>
@@ -96,11 +104,16 @@ export default function Select({
             {/* Opções */}
             {optionsEnabled &&
                 <ul style={{top: height}} className={styles.optionsContainer} onClick={() => setOptionsEnabled(false)}>
-                    {filteredOptions.map((opt: any) => {
+
+                    {filteredOptions.length > 0 && filteredOptions.map((opt: IOption) => {
                         return (
                             <li key={opt.id} title={opt.name} onClick={() => handleClickOption(opt.name)}>{opt.name}</li>
                         );
                     })}
+
+                    {filteredOptions.length === 0 &&
+                        <p>Não localizado...</p>
+                    }
                 </ul>            
             }
         </div>

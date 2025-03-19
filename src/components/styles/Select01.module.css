@@ -47,3 +47,12 @@
 .optionsContainer li:hover {
     background-color: var(--selectOptionsColor01);
 }
+
+.optionsContainer p {
+    width: 100%;
+    padding: 5px;
+
+    font-size: 0.9em;
+    color: var(--fontGrey01);
+    cursor: default;
+}
