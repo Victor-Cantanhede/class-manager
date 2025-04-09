@@ -1,5 +1,7 @@
 'use client';
+import { useAuthContext } from "@/app/context/AuthContext";
 import { useState } from "react";
+import { getClasses } from '../../services/classes/getClasses';
 
 import { FiPlusCircle, FiSearch, FiEdit, FiTrash2, FiAlertTriangle, FiFilter } from "react-icons/fi";
 import Input01 from "@/components/Inputs/Input01";
@@ -25,6 +27,9 @@ interface IFilteredClasses {
 }
 
 export default function TurmasPage() {
+
+    // Contexto dados do usuário
+    const { user } = useAuthContext();
 
     // Estado do input de pesquisa rápida
     const [searchInput, setSearchInput] = useState('');

@@ -47,6 +47,5 @@ export function useModalContext() {
     if (!context) {
         throw new Error('useModal deve ser usado dentro do contexto ModalProvider');        
     }
-
     return context;
 }

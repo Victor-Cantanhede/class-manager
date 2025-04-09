@@ -1,6 +1,6 @@
 import { useAuthContext } from '@/app/context/AuthContext';
 import { ReactNode } from 'react';
-import { FiLayers, FiUsers, FiTool, FiHome, FiUser } from "react-icons/fi";
+import { FiLayers, FiUsers, FiTool, FiHome, FiUser, FiAirplay } from "react-icons/fi";
 import Link from 'next/link';
 
 import styles from '../styles/MainLayout.module.css';
@@ -34,6 +34,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         {title: 'Home', icon: <FiHome />, page: '/pages/home'},
         {title: 'Turmas', icon: <FiLayers />, page: '/pages/turmas'},
         {title: 'Alunos', icon: <FiUsers />, page: '/pages/alunos'},
+        {title: 'Instrutores', icon: <FiAirplay />, page: '/pages/alunos'},
         {title: 'Suporte', icon: <FiTool />, page: '/pages/suporte'}
     ]
 

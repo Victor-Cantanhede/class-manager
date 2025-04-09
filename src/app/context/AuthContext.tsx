@@ -7,6 +7,7 @@ import { authLogin } from "../services/login/authService";
 
 // Interface IUser
 interface IUser {
+    userId: string;
     name: string;
     userName: string;
 }
@@ -78,9 +79,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userData = await authLogin(userName, password);
 
             const newUser: IUser = {
+                userId: userData.user._id,
                 name: userData.user.name,
                 userName: userData.user.userName
-            }
+            };
 
             // Atualizando o estado do usuário
             setUser(newUser);
