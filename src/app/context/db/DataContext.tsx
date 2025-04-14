@@ -39,15 +39,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
 
     // Chama API para alunos
-    const getAllStudents = async () => {
-        if (user && user.id) {
-            try {
-                const response = await 
-            } catch (error) {
-                
-            }
-        }
-    };
+
 
     // Chamando funções ao carregar a página
     useEffect(() => {
